@@ -1,21 +1,22 @@
-package ufc.cc.sd.q01;
+package ufc.cc.sd.q02;
 
 import java.net.*;
 import java.io.*;
-
-public class UDPClient{
+public class CalculadoraUDPClient{
 	public static void main(String args[]){ 
 		// args give message contents and destination hostname
 		DatagramSocket aSocket = null;
 		try {
-			aSocket = new DatagramSocket();    
-			byte [] m = args[0].getBytes();
+			aSocket = new DatagramSocket();
+			String nome = "3+97";
+			byte [] m = nome.getBytes();
+			InetAddress aHost = InetAddress.getByName("10.0.127.65");
+			int serverPort = 6666;		                                                 
 			
-			InetAddress aHost = InetAddress.getByName(args[1]);
-			int serverPort = 4545;		                                                 
 			DatagramPacket request =
-					new DatagramPacket(m,  args[0].length(), aHost, serverPort);
-			aSocket.send(request);			                        
+					new DatagramPacket(m,  nome.length(), aHost, serverPort);
+			aSocket.send(request);
+			
 			byte[] buffer = new byte[1000];
 			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);	
 			aSocket.receive(reply);
