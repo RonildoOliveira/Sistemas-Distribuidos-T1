@@ -4,11 +4,13 @@ import java.net.*;
 import java.io.*;
 public class CalculadoraTCPServer {
 	
+	private static ServerSocket listenSocket;
+
 	public static void main (String args[]) {
 		try{
 			System.out.println("ok");
 			int serverPort = 8590; // the server port
-			ServerSocket listenSocket = new ServerSocket(serverPort);
+			listenSocket = new ServerSocket(serverPort);
 			while(true) {
 				Socket clientSocket = listenSocket.accept();
 				Connection c = new Connection(clientSocket);
@@ -84,7 +86,7 @@ class Connection extends Thread {
 		}
 		
 		else{
-			return "NaN";
+			return "Not a Valid Expression";
 		}
 	}
 }
