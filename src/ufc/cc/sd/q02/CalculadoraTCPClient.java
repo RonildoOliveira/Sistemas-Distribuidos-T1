@@ -1,19 +1,20 @@
-package ufc.cc.sd.q01;
-
-
+package ufc.cc.sd.q02;
 
 import java.net.*;
 import java.io.*;
-public class TCPClient {
+public class CalculadoraTCPClient {
 	public static void main (String args[]) {
 		// arguments supply message and hostname
 		Socket s = null;
 		try{
-			int serverPort = 7896;
+			int serverPort = 8590;
 			s = new Socket(args[1], serverPort);    
 			DataInputStream in = new DataInputStream( s.getInputStream());
 			DataOutputStream out =new DataOutputStream( s.getOutputStream());
-			out.writeUTF(args[0]);      	// UTF is a string encoding see Sn. 4.4
+			
+			
+			out.writeUTF(args[0]);      	// Send expression String like 34+32
+			
 			String data = in.readUTF();	    // read a line of data from the stream
 			System.out.println("Received: "+ data) ; 
 		}catch (UnknownHostException e){System.out.println("Socket:"+e.getMessage());

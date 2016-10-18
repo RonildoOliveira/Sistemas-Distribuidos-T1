@@ -3,6 +3,7 @@ package ufc.cc.sd.q01;
 import java.net.*;
 import java.io.*;
 public class TCPServer {
+	
 	public static void main (String args[]) {
 		try{
 			int serverPort = 7896; // the server port

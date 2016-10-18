@@ -3,7 +3,7 @@ package ufc.cc.sd.q01;
 import java.net.*;
 import java.io.*;
 public class UDPClient{
-    public static void main(String args[]){ 
+	public static void main(String args[]){ 
 		// args give message contents and destination hostname
 		DatagramSocket aSocket = null;
 		try {
@@ -12,7 +12,7 @@ public class UDPClient{
 			InetAddress aHost = InetAddress.getByName(args[1]);
 			int serverPort = 6789;		                                                 
 			DatagramPacket request =
-			 	new DatagramPacket(m,  args[0].length(), aHost, serverPort);
+					new DatagramPacket(m,  args[0].length(), aHost, serverPort);
 			aSocket.send(request);			                        
 			byte[] buffer = new byte[1000];
 			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);	
