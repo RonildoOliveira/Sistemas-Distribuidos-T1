@@ -1,24 +1,45 @@
 package ufc.cc.sd.q04;
 
-
-
-import java.net.*;
-import java.io.*;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+ 
 public class ChatNBTCPClient {
-	public static void main (String args[]) {
-		// arguments supply message and hostname
-		Socket s = null;
-		try{
-			int serverPort = 7896;
-			s = new Socket(args[1], serverPort);    
-			DataInputStream in = new DataInputStream( s.getInputStream());
-			DataOutputStream out =new DataOutputStream( s.getOutputStream());
-			out.writeUTF(args[0]);      	// UTF is a string encoding see Sn. 4.4
-			String data = in.readUTF();	    // read a line of data from the stream
-			System.out.println("Received: "+ data) ; 
-		}catch (UnknownHostException e){System.out.println("Socket:"+e.getMessage());
-		}catch (EOFException e){System.out.println("EOF:"+e.getMessage());
-		}catch (IOException e){System.out.println("readline:"+e.getMessage());
-		}finally {if(s!=null) try {s.close();}catch (IOException e){System.out.println("close:"+e.getMessage());}}
-     }
+ 
+	public static void main(String[] args) throws IOException, InterruptedException {
+ 
+		InetSocketAddress crunchifyAddr = new InetSocketAddress("localhost", 1111);
+		SocketChannel crunchifyClient = SocketChannel.open(crunchifyAddr);
+ 
+		log("Connecting to Server on port 1111...");
+ 
+		ArrayList<String> companyDetails = new ArrayList<String>();
+ 
+		// create a ArrayList with companyName list
+		companyDetails.add("Facebook");
+		companyDetails.add("Twitter");
+		companyDetails.add("IBM");
+		companyDetails.add("Google");
+		companyDetails.add("Crunchify");
+ 
+		for (String companyName : companyDetails) {
+ 
+			byte[] message = new String(companyName).getBytes();
+			ByteBuffer buffer = ByteBuffer.wrap(message);
+			crunchifyClient.write(buffer);
+ 
+			log("sending: " + companyName);
+			buffer.clear();
+ 
+			// wait for 2 seconds before sending next message
+			Thread.sleep(2000);
+		}
+		crunchifyClient.close();
+	}
+ 
+	private static void log(String str) {
+		System.out.println(str);
+	}
 }

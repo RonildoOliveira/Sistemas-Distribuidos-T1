@@ -32,7 +32,7 @@ class ThreadRecebe implements Runnable{
 		this.socket = sock;
 	}
 	
-	//método da classe runnable
+	//metodo da classe runnable
 	public void run() {
 		try{
 		receber = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -54,7 +54,7 @@ class ThreadEnvio implements Runnable{
 		this.socket = sock;
 	}
 	
-	//método de runnable
+	//metodo de runnable
 	public void run(){
 		try{
 			if(socket.isConnected())
