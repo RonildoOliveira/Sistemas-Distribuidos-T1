@@ -9,21 +9,18 @@ public class CalculadoraUDPServer{
     	
     	DatagramSocket aSocket = null;
 		try{
-			System.out.println("ok");
-	    	aSocket = new DatagramSocket(6666);
-					// create socket at agreed port
+			System.out.println("Servidor Online...");
+	    	aSocket = new DatagramSocket(6666); // create socket at agreed port
+	    	
 			byte[] buffer = new byte[1000];
  			while(true){
  				
  				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
   				aSocket.receive(request);
   				
-  				String r = handleExpression(new String(request.getData(),0,request.getLength()));
-  				
-//    			DatagramPacket reply = new DatagramPacket(request.getData(), request.getLength(), 
-//    				request.getAddress(), request.getPort());
-    			   			    			
-    			DatagramPacket reply = new DatagramPacket(r.getBytes(), r.length(), 
+  				String expression = handleExpression(new String(request.getData(),0,request.getLength()));
+
+  				DatagramPacket reply = new DatagramPacket(expression.getBytes(), expression.length(), 
         				request.getAddress(), request.getPort());
     			
     			aSocket.send(reply);
@@ -38,39 +35,55 @@ public class CalculadoraUDPServer{
 		String part2 = null;
 		
 		if(expression.contains("+")){
-			expression = expression.replace("+", "#");
-			String[] parts = expression.split("#");
-			part1 = parts[0];
-			part2 = parts[1];
-			
-			return String.valueOf(Integer.parseInt(part1)+Integer.parseInt(part2));
+			try {
+				expression = expression.replace("+", "#");
+				String[] parts = expression.split("#");
+				part1 = parts[0];
+				part2 = parts[1];
+				
+				return String.valueOf(Integer.parseInt(part1)+Integer.parseInt(part2));
+			} catch (Exception e) {
+				return "NaN";
+			}			
 		}
 		
 		else if(expression.contains("-")){
-			expression = expression.replace("-", "#");
-			String[] parts = expression.split("#");
-			part1 = parts[0];
-			part2 = parts[1];			
-			
-			return String.valueOf(Integer.parseInt(part1)-Integer.parseInt(part2));
+			try {
+				expression = expression.replace("-", "#");
+				String[] parts = expression.split("#");
+				part1 = parts[0];
+				part2 = parts[1];
+				
+				return String.valueOf(Integer.parseInt(part1)-Integer.parseInt(part2));
+			} catch (Exception e) {
+				return "NaN";
+			}
 		}
 		
 		else if(expression.contains("*")){
-			expression = expression.replace("*", "#");
-			String[] parts = expression.split("#");
-			part1 = parts[0];
-			part2 = parts[1];
-			
-			return String.valueOf(Integer.parseInt(part1)*Integer.parseInt(part2));
+			try {
+				expression = expression.replace("*", "#");
+				String[] parts = expression.split("#");
+				part1 = parts[0];
+				part2 = parts[1];
+				
+				return String.valueOf(Integer.parseInt(part1)*Integer.parseInt(part2));
+			} catch (Exception e) {
+				return "NaN";
+			}
 		}
 		
 		else if(expression.contains("/")){
-			expression = expression.replace("/", "#");
-			String[] parts = expression.split("#");
-			part1 = parts[0];
-			part2 = parts[1];
-			
-			return String.valueOf(Integer.parseInt(part1)/Integer.parseInt(part2));
+			try {
+				expression = expression.replace("/", "#");
+				String[] parts = expression.split("#");
+				part1 = parts[0];
+				part2 = parts[1];
+				
+				return String.valueOf(Integer.parseInt(part1)/Integer.parseInt(part2));
+			} catch (Exception e) {
+				return "NaN";
+			}
 		}
 		
 		else{
