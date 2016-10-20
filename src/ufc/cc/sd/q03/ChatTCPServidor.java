@@ -4,88 +4,73 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ChatTCPServidor {
 	
 	public static void main(String[] args) throws IOException {
 		int port = 6666;
-		System.out.println("Esperando conexões na porta - " + port);
-		
 		ServerSocket ss = new ServerSocket(port); //Instanciando Socket
-		Socket clienteSocket = ss.accept(); //Socket pra aceitar conexões
+		System.out.println("Servidor rodando na porta "+ ss.getLocalPort());
 		
-		System.out.println("Conexão recebida de " + clienteSocket.getInetAddress());
+		Servidor server = new Servidor(ss,null);
+		server.iniciarConexao();
 		
-		//cria duas threads para enviar e receber do cliente
-		ThreadRecebeCliente receber = new ThreadRecebeCliente(clienteSocket);
-		Thread thread = new Thread(receber);
-		thread.start();
-		
-		ThreadEnviaCliente send = new ThreadEnviaCliente(clienteSocket);
-		Thread thread2 = new Thread(send);
-		thread2.start();
-		//ss.close();
 	}
 
 }
 
-class ThreadRecebeCliente implements Runnable{
-	Socket clienteSocket = null;
-	BufferedReader buffReader = null;
+class Servidor extends Thread{
+	Socket cliente;
+	private ServerSocket ss;
+	private Map<String, Socket> clientesOnline = new HashMap<String, Socket>();
+	//Opicional
+	//private Map<String, List<String>> salaBatePapo = new HashMap<String, List<String>>();
+	private PrintStream enviar;
+	private BufferedReader receber;
+	private String msg;
 	
-	//construtor
-	public ThreadRecebeCliente(Socket clienteSocket){
-		this.clienteSocket = clienteSocket;
+	
+	public Servidor(ServerSocket ss, Socket s){
+		this.ss = ss;
+		this.cliente = s;
 	}
 	
-	
-	public void run() {
-		try{
-			buffReader = new BufferedReader(new InputStreamReader(this.clienteSocket.getInputStream()));		
-		
-			String mensagem;
-				while(true){
-					//atribuindo mensagem do cliente para variável mensagem
-					while((mensagem = buffReader.readLine())!= null){
-						if(mensagem.equals("exit")){
-							break;//fecha o socket se exit
-						}
-						System.out.println("do Cliente: " + mensagem);//mostra a mensagem do cliente
-					}
-				this.clienteSocket.close();
-				System.exit(0);
-				}		
-			} catch(Exception ex){System.out.println(ex.getMessage());}
-	}
-} // fim da classe ThreadRecebeCliente
-
-
-class ThreadEnviaCliente implements Runnable{
-	PrintWriter pwPrintWriter;
-	Socket clienteSocket = null;
-	
-	//construtor
-	public ThreadEnviaCliente(Socket clienteSocket){
-		this.clienteSocket = clienteSocket;
-	}
-	
-	//método da clase runnable
-	public void run() {
-		try{
-		pwPrintWriter =new PrintWriter(new OutputStreamWriter(this.clienteSocket.getOutputStream()));
-			while(true){
-				String mensagemParaCliente = null;
-				BufferedReader input = new BufferedReader(new InputStreamReader(System.in));//pegar entrada do usuário
-				
-				mensagemParaCliente = input.readLine();// pegar a mensagem para enviar pro cliente
-				
-				pwPrintWriter.println(mensagemParaCliente);//envia a mensagem pro Cliente com printWriter
-				pwPrintWriter.flush();//descarrega o PrintWriter
+	public void iniciarConexao(){
+		while(true){
+			try {
+				cliente = ss.accept();
+				if(cliente.isConnected()){
+					System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostName());
+					Servidor novoCliente = new Servidor(ss,this.cliente);
+					novoCliente.start();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch(Exception ex){System.out.println(ex.getMessage());}	
+		}
+	}
+	
+	@Override
+	public void run() {
+		try {
+			enviar = new PrintStream(cliente.getOutputStream());
+			receber = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+			Socket clienteDestino;
+			PrintStream enviarCliente;
+			
+			while(true){
+				msg = receber.readLine();
+				//continuar depois
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
-

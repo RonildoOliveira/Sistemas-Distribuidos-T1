@@ -7,7 +7,7 @@ public class MulticastPeer{
 		// args give message contents and destination multicast group (e.g. "228.5.6.7")
 		MulticastSocket s =null;
 		try {
-			InetAddress group = InetAddress.getByName(args[1]);
+			InetAddress group = InetAddress.getByName(args[0]);
 			s = new MulticastSocket(6789);
 			s.joinGroup(group);
  			byte [] m = args[0].getBytes();

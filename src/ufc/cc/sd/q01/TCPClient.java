@@ -10,10 +10,10 @@ public class TCPClient {
 		Socket s = null;
 		try{
 			int serverPort = 7896;
-			s = new Socket(args[1], serverPort);    
+			s = new Socket("localhost", serverPort);    
 			DataInputStream in = new DataInputStream( s.getInputStream());
 			DataOutputStream out =new DataOutputStream( s.getOutputStream());
-			out.writeUTF(args[0]);      	// UTF is a string encoding see Sn. 4.4
+			out.writeUTF("Oi");      	// UTF is a string encoding see Sn. 4.4
 			String data = in.readUTF();	    // read a line of data from the stream
 			System.out.println("Received: "+ data) ; 
 		}catch (UnknownHostException e){System.out.println("Socket:"+e.getMessage());

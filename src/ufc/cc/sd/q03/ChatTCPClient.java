@@ -1,79 +1,109 @@
 package ufc.cc.sd.q03;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Scanner;
 
-public class ChatTCPClient {
-
+public class ChatTCPClient extends Thread{
+	
+	public static Socket sock;
+	private static String nome;
+	private static Scanner scan = new Scanner(System.in);
+	
+	
 	public static void main(String[] args)
 	{
+		System.out.println("Diga seu nome: ");
+		nome = scan.nextLine();
 		try {
-			Socket sock = new Socket("localhost",6666); //criando socket local
+			
+			sock = new Socket("localhost",6666); //criando socket local																																																																																																																																																																																																																																																																																																																																									
+			System.out.println("Cliente conectado ao servidor!");
+			
 			// Criando duas threads, uma pra envio e outra pra receber
-			ThreadEnvio threadEnvio = new ThreadEnvio(sock);
+			ThreadEnvio threadEnvio = new ThreadEnvio(sock.getOutputStream());
 			Thread thread = new Thread(threadEnvio);
 			thread.start();
 			
-			ThreadRecebe recieveThread = new ThreadRecebe(sock);
+			ThreadRecebe recieveThread = new ThreadRecebe(sock.getInputStream());
 			Thread thread2 =new Thread(recieveThread);
 			thread2.start();
+			
 		} catch (Exception e) {System.out.println(e.getMessage());} 
 	}
-}
-class ThreadRecebe implements Runnable{
-	//Instanciando
-	Socket socket = null;
-	BufferedReader receber = null;
 	
-	//construtor
-	public ThreadRecebe(Socket sock) {
-		this.socket = sock;
-	}
-	
-	//método da classe runnable
-	public void run() {
-		try{
-		receber = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-		String msgRecebida = null;
-			while((msgRecebida = receber.readLine())!= null){
-				System.out.println("do Servidor: " + msgRecebida);
-			}
-		}catch(Exception e){System.out.println(e.getMessage());
-	}
+	public String getNome(){
+		return this.nome;
 	}
 }
 
 class ThreadEnvio implements Runnable{
-	Socket socket = null;
-	PrintWriter print = null;
-	BufferedReader brinput = null;
+	//Instanciando
+	private PrintStream printStream;
+	private Scanner scanner;
+	private String msg;
 	
-	public ThreadEnvio(Socket sock){
-		this.socket = sock;
+	//construtor
+	public ThreadEnvio(OutputStream output) {
+		printStream = new PrintStream(output);
+	}
+	
+	//método da classe thread
+	public void run() {
+		scanner = new Scanner(System.in);
+		
+		while(true){
+			msg = scanner.nextLine();
+			printStream.println(msg);
+		}
+	}
+}
+
+class ThreadRecebe implements Runnable{
+	private BufferedReader entrada;
+	private String msg; 
+	
+	public ThreadRecebe(InputStream input){
+		entrada = new BufferedReader(new InputStreamReader(input));
 	}
 	
 	//método de runnable
 	public void run(){
-		try{
-			if(socket.isConnected())
-			{
-				System.out.println("Cliente conectado a " + socket.getInetAddress());
-				this.print = new PrintWriter(socket.getOutputStream(), true);	
-			
-			while(true){
-				
-				brinput = new BufferedReader(new InputStreamReader(System.in));
-				String msgServidor = null;
-				msgServidor = brinput.readLine();
-				this.print.println(msgServidor);
-				this.print.flush(); // limpar o printWriter
-			
-				if(msgServidor.equals("SAIR"))
-				break;
-			}
-		socket.close();}}catch(Exception e){System.out.println(e.getMessage());}
+		try {
+			msg = entrada.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(msg !=null)
+			System.out.println(msg);
 	}
 }
+// Testando uma lógica se pode da certo, desconsidere por enquanto isso
+//class ReceberMsgServidor implements Runnable{
+//	private BufferedReader entrada;
+//	private String msg;
+//	
+//	public ReceberMsgServidor(InputStream in) {
+//		entrada = new BufferedReader(new InputStreamReader(in));
+//	}
+//	
+//	@Override
+//	public void run() {
+//		String[] refat;
+//		while(true){
+//			try {
+//				msg = entrada.readLine();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		refat = msg.split(" - ");
+//		}
+//	}
+//	
+//}
 
