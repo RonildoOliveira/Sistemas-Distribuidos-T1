@@ -1,4 +1,4 @@
-package ufc.cc.sd.q03;
+package ufc.cc.sd.q04;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,25 +6,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class ChatTCPClient extends Thread{
 	
-	public static Socket sock;
-	private static String nome;
+	public static Socket sock = null;
+	private static String nome = null;
 	private static Scanner scan = new Scanner(System.in);
 	
 	
 	public static void main(String[] args)
 	{
+		
 		System.out.println("Diga seu nome: ");
 		nome = scan.nextLine();
 		try {
 			
 			sock = new Socket("localhost",6666); //criando socket local																																																																																																																																																																																																																																																																																																																																									
 			System.out.println("Cliente conectado ao servidor!");
-			
+			System.out.println(nome +"< " + InetAddress.getLocalHost()+" >");
 			// Criando duas threads, uma pra envio e outra pra receber
 			ThreadEnvio threadEnvio = new ThreadEnvio(sock.getOutputStream());
 			Thread thread = new Thread(threadEnvio);

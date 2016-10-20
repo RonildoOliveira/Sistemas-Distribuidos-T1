@@ -1,4 +1,4 @@
-package ufc.cc.sd.q03;
+package ufc.cc.sd.q04;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,8 +20,7 @@ public class ChatTCPServidor {
 		System.out.println("Servidor rodando na porta "+ ss.getLocalPort());
 		
 		Servidor server = new Servidor(ss,null);
-		server.iniciarConexao();
-		
+		server.iniciarConexao();	
 	}
 
 }
