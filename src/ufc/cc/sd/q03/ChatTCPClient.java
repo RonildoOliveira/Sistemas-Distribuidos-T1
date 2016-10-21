@@ -1,3 +1,18 @@
+/**
+ * 
+ * UNIVERSIDADE FEDERAL DO CEARÁ - CAMPUS QUIXADÁ
+ * CIÊNCIA DA COMPUTAÇÃO - SISTEMAS DISTRIBUÍDOS
+ * 
+ * PROF. PAULO REGO
+ * 
+ * DIEINISON JACK   #368339
+ * RONILDO OLIVEIRA #366763
+ * 
+ * CÓDIGOS DISPONÍVEIS EM:
+ * https://github.com/RonildoOliveira/Sistemas-Distribuidos-T1
+ * 
+ **/
+
 package ufc.cc.sd.q03;
 
 import java.io.IOException;
@@ -7,11 +22,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class Cliente {
+public class ChatTCPClient {
+	@SuppressWarnings("unused")
 	private String host;
+	@SuppressWarnings("unused")
 	private int porta;
 	   
-	public Cliente (String host, int porta) {
+	public ChatTCPClient (String host, int porta) {
 	    this.host = host;
 	    this.porta = porta;
 	}
@@ -19,12 +36,12 @@ public class Cliente {
 	public void executa(){
 		try {
 			Socket cliente = new Socket("localhost", 6666);
-			//Thread para receber mensagens do servidor
+			//Thread to receive messages from server
 			Receber r = new Receber(cliente.getInputStream());
 			Thread t = new Thread(r);
 			t.start();
 			
-			//LÃª msgs do teclado e manda pro servidor
+			//Read messages and sends to server
 			Scanner scan = new Scanner(System.in);
 			PrintStream msg = new PrintStream(cliente.getOutputStream());
 			while(scan.hasNext()){
@@ -49,8 +66,9 @@ public class Cliente {
 			this.servidor = servidor;
 		}
 		   
+		@SuppressWarnings("resource")
 		public void run() {
-		// recebe msgs do servidor e imprime no console
+		// Receive messages from server and shows in the console
 		Scanner s = new Scanner(this.servidor);
 			while (s.hasNextLine()) {
 				System.out.println(s.nextLine());
@@ -59,7 +77,7 @@ public class Cliente {
 	}
 	
 	public static void main(String[] args) {
-		Cliente cli = new Cliente("localhost", 6666);
+		ChatTCPClient cli = new ChatTCPClient("localhost", 6666);
 		cli.executa();
 	}
 }

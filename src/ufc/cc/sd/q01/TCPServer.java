@@ -1,9 +1,29 @@
+/**
+ * 
+ * UNIVERSIDADE FEDERAL DO CEARÁ - CAMPUS QUIXADÁ
+ * CIÊNCIA DA COMPUTAÇÃO - SISTEMAS DISTRIBUÍDOS
+ * 
+ * PROF. PAULO REGO
+ * 
+ * DIEINISON JACK   #368339
+ * RONILDO OLIVEIRA #366763
+ * 
+ * CÓDIGOS DISPONÍVEIS EM:
+ * https://github.com/RonildoOliveira/Sistemas-Distribuidos-T1
+ * 
+ **/
+
 package ufc.cc.sd.q01;
 
-import java.net.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 public class TCPServer {
 	
+	@SuppressWarnings({ "resource", "unused" })
 	public static void main (String args[]) {
 		try{
 			int serverPort = 7896; // the server port
@@ -28,13 +48,20 @@ class Connection extends Thread {
 		} catch(IOException e) {System.out.println("Connection:"+e.getMessage());}
 	}
 	public void run(){
-		try {			                 // an echo server
-
-			String data = in.readUTF();	                  // read a line of data from the stream
+		try {
+			String data = in.readUTF();
 			out.writeUTF(data);
-		}catch (EOFException e){System.out.println("EOF:"+e.getMessage());
-		} catch(IOException e) {System.out.println("readline:"+e.getMessage());
-		} finally{ try {clientSocket.close();}catch (IOException e){/*close failed*/}}
+		}catch (EOFException e){
+			System.out.println("EOF:"+e.getMessage());
+		} catch(IOException e) {
+			System.out.println("readline:"+e.getMessage());
+		} finally{ 
+			try {
+				clientSocket.close();
+			}catch (IOException e){
+				
+			}
+		}
 		
 
 	}

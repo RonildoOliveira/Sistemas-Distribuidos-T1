@@ -13,7 +13,7 @@
  * 
  **/
 
-package ufc.cc.sd.q04;
+package ufc.cc.sd.q05;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Scanner;
  
-public class ChatNBTCPClient {
+public class ChatNBTCPCifraClient {
  
 	@SuppressWarnings("resource")
 	public static void main(String[] args) 

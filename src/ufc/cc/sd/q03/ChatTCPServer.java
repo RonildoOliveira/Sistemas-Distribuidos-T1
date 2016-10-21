@@ -1,3 +1,18 @@
+/**
+ * 
+ * UNIVERSIDADE FEDERAL DO CEAR¡ - CAMPUS QUIXAD¡
+ * CI NCIA DA COMPUTA«√O - SISTEMAS DISTRIBUÕDOS
+ * 
+ * PROF. PAULO REGO
+ * 
+ * DIEINISON JACK   #368339
+ * RONILDO OLIVEIRA #366763
+ * 
+ * C”DIGOS DISPONÕVEIS EM:
+ * https://github.com/RonildoOliveira/Sistemas-Distribuidos-T1
+ * 
+ **/
+
 package ufc.cc.sd.q03;
 
 import java.io.IOException;
@@ -9,25 +24,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Servidor{
+public class ChatTCPServer{
 	
 	private List<PrintStream> clientes;
 	private int porta = 6666;
 	
-	public Servidor(int porta){
+	public ChatTCPServer(int porta){
 		this.porta = porta;
 		this.clientes = new ArrayList<PrintStream>();
 	}
 	
+	@SuppressWarnings("resource")
 	public void executa(){
 		try {
-			//Abre socket servidor
+			//Open socket server
 			ServerSocket serv = new ServerSocket(this.porta);
-			System.out.println("Servidor rodando na porta "+ serv.getLocalPort());
+			System.out.println("Server rodando na porta "+ serv.getLocalPort());
 			Scanner scan = new Scanner(System.in);
 			while(true){
-				//Para conectar mais de um cliente
-				//precisamos criar threads.
+				//Connect more clients with a thread
 				Socket client = serv.accept();
 				String nome = null;
 				
@@ -35,15 +50,17 @@ public class Servidor{
 				nome = scan.nextLine();
 				System.out.println("Bem vindo " + nome);
 				
-				// adiciona saida do cliente √† lista
+				//Add the out client to list
 			    PrintStream ps = new PrintStream(client.getOutputStream());
 			    this.clientes.add(ps);
 				
-				//Cria uma thread do servidor para tratar a conex√£o
-				Tratamento tratamento = new Tratamento(client.getInputStream(), this);
+				//Make a thread in server to handle connection
+				Tratamento tratamento = 
+						new Tratamento(client.getInputStream(), this);
 				
 				Thread t = new Thread(tratamento);
-				t.start();//inicia essa thread
+				//Start the thread
+				t.start();
 			}			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -51,7 +68,7 @@ public class Servidor{
 	}
 	
 	public void broadcastMsg(String msg){
-		//envia msg pra todos conectados
+		//Send messages to all 
 		for(PrintStream cliente: this.clientes){
 			cliente.println(msg);
 		}
@@ -59,15 +76,15 @@ public class Servidor{
 	
 	public class Tratamento implements Runnable { 
 		   private InputStream cliente;
-		   private Servidor servidor;
+		   private ChatTCPServer servidor;
 		 
-		   public Tratamento(InputStream cliente, Servidor servidor) {
+		   public Tratamento(InputStream cliente, ChatTCPServer servidor) {
 		     this.cliente = cliente;
 		     this.servidor = servidor;
 		   }
 		 
 		   public void run() {
-		     // quando chegar uma msg, distribui pra todos
+		     // Broadcast
 		     Scanner s = new Scanner(this.cliente);
 		     while (s.hasNextLine()) {
 		       servidor.broadcastMsg(s.nextLine());
@@ -77,7 +94,7 @@ public class Servidor{
 	}
 	
 	public static void main(String[] args) {
-		Servidor s = new Servidor(6666);
+		ChatTCPServer s = new ChatTCPServer(6666);
 		s.executa();
 	}
 }

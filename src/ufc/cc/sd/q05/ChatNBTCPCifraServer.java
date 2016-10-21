@@ -13,7 +13,7 @@
  * 
  **/
 
-package ufc.cc.sd.q04;
+package ufc.cc.sd.q05;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -25,7 +25,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
  
-public class ChatNBTCPServer {
+public class ChatNBTCPCifraServer {
  
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
@@ -69,17 +69,27 @@ public class ChatNBTCPServer {
 
 				} else if (selectKey.isReadable()) {
 					
-					SocketChannel socketChannelClient = (SocketChannel) selectKey.channel();
+					SocketChannel socketChannelClient = 
+							(SocketChannel) selectKey.channel();
+					
 					ByteBuffer byteBuffer = ByteBuffer.allocate(256);
 					socketChannelClient.read(byteBuffer);
 					String result = new String(byteBuffer.array()).trim();
- 
-					System.out.println("Received: [" + result + "]");
  
 					//Close connection when he client sends a #
 					if (result.equals("#")) {
 						socketChannelClient.close();
 						System.out.println("Conexao parada");
+					}
+					
+				    else{
+				    	StringBuilder builder = new StringBuilder();
+
+				    	for (int i = 0; i < result.length(); i++) {
+				            char c = (char)(result.charAt(i) + Character.getNumericValue('_'));
+				            builder.append(c);
+				        }
+				        System.out.println("Recebido: [" + builder.toString() + "]");
 					}
 				}
 				iteratorKey.remove();
