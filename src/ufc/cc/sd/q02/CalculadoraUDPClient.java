@@ -8,9 +8,9 @@ public class CalculadoraUDPClient{
 		DatagramSocket aSocket = null;
 		try {
 			aSocket = new DatagramSocket();
-			String nome = "397";
+			String nome = "3+97";
 			byte [] m = nome.getBytes();
-			InetAddress aHost = InetAddress.getByName("localhost");
+			InetAddress aHost = InetAddress.getByName("192.168.1.7");
 			int serverPort = 6666;		                                                 
 			
 			DatagramPacket request =

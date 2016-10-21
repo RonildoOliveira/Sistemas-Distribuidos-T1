@@ -4,42 +4,31 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
+import java.util.Scanner;
  
 public class ChatNBTCPClient {
  
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws IOException, InterruptedException {
  
-		InetSocketAddress crunchifyAddr = new InetSocketAddress("localhost", 1111);
-		SocketChannel crunchifyClient = SocketChannel.open(crunchifyAddr);
+		InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", 1111);
+		SocketChannel socketChanel = SocketChannel.open(inetSocketAddress);
  
-		log("Connecting to Server on port 1111...");
+		System.out.println("Conectando ao Servidor...");
  
-		ArrayList<String> companyDetails = new ArrayList<String>();
- 
-		// create a ArrayList with companyName list
-		companyDetails.add("Facebook");
-		companyDetails.add("Twitter");
-		companyDetails.add("IBM");
-		companyDetails.add("Google");
-		companyDetails.add("Crunchify");
- 
-		for (String companyName : companyDetails) {
- 
-			byte[] message = new String(companyName).getBytes();
+		String msg = null;
+		while (msg != "#") {
+			
+			msg = new Scanner(System.in).nextLine();
+			
+			byte[] message = new String(msg).getBytes();
 			ByteBuffer buffer = ByteBuffer.wrap(message);
-			crunchifyClient.write(buffer);
+			socketChanel.write(buffer);
  
-			log("sending: " + companyName);
+			System.out.println("Enviado: [" + msg + "]");
 			buffer.clear();
- 
-			// wait for 2 seconds before sending next message
-			Thread.sleep(2000);
+
 		}
-		crunchifyClient.close();
-	}
- 
-	private static void log(String str) {
-		System.out.println(str);
+		socketChanel.close();
 	}
 }

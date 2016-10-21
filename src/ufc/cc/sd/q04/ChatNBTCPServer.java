@@ -12,29 +12,26 @@ import java.util.Set;
  
 public class ChatNBTCPServer {
  
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
  
-		// Selector: multiplexor of SelectableChannel objects
+		// Multiplecador de of SelectableChannel objects
 		Selector selector = Selector.open(); // selector is open here
  
 		// ServerSocketChannel: selectable channel for stream-oriented listening sockets
-		ServerSocketChannel crunchifySocket = ServerSocketChannel.open();
-		InetSocketAddress crunchifyAddr = new InetSocketAddress("localhost", 1111);
+		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+		InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", 1111);
  
 		// Binds the channel's socket to a local address and configures the socket to listen for connections
-		crunchifySocket.bind(crunchifyAddr);
+		serverSocketChannel.bind(inetSocketAddress); 
+		serverSocketChannel.configureBlocking(false);
  
-		// Adjusts this channel's blocking mode.
-		crunchifySocket.configureBlocking(false);
+		int ops = serverSocketChannel.validOps();
+		SelectionKey selectionKey = serverSocketChannel.register(selector, ops, null);
  
-		int ops = crunchifySocket.validOps();
-		SelectionKey selectKy = crunchifySocket.register(selector, ops, null);
- 
-		// Infinite loop..
-		// Keep server running
 		while (true) {
  
-			log("i'm a server and i'm waiting for new connection and buffer select...");
+			System.out.println("Servidor ativo...");
 			// Selects a set of keys whose corresponding channels are ready for I/O operations
 			selector.select();
  
@@ -47,29 +44,27 @@ public class ChatNBTCPServer {
  
 				// Tests whether this key's channel is ready to accept a new socket connection
 				if (myKey.isAcceptable()) {
-					SocketChannel crunchifyClient = crunchifySocket.accept();
- 
-					// Adjusts this channel's blocking mode to false
-					crunchifyClient.configureBlocking(false);
+					
+					SocketChannel socketChannelClient = serverSocketChannel.accept();
+					socketChannelClient.configureBlocking(false);
  
 					// Operation-set bit for read operations
-					crunchifyClient.register(selector, SelectionKey.OP_READ);
-					log("Connection Accepted: " + crunchifyClient.getLocalAddress() + "\n");
- 
-					// Tests whether this key's channel is ready for reading
+					socketChannelClient.register(selector, SelectionKey.OP_READ);
+					System.out.println("Connection Accepted: " + socketChannelClient.getLocalAddress() + "\n");
+
 				} else if (myKey.isReadable()) {
 					
-					SocketChannel crunchifyClient = (SocketChannel) myKey.channel();
-					ByteBuffer crunchifyBuffer = ByteBuffer.allocate(256);
-					crunchifyClient.read(crunchifyBuffer);
-					String result = new String(crunchifyBuffer.array()).trim();
+					SocketChannel socketChannelClient = (SocketChannel) myKey.channel();
+					ByteBuffer byteBuffer = ByteBuffer.allocate(256);
+					socketChannelClient.read(byteBuffer);
+					String result = new String(byteBuffer.array()).trim();
  
-					log("Message received: " + result);
+					System.out.println("Recebido: [" + result + "]");
  
-					if (result.equals("Crunchify")) {
-						crunchifyClient.close();
-						log("\nIt's time to close connection as we got last company name 'Crunchify'");
-						log("\nServer will keep running. Try running client again to establish new connection");
+					//condicao de parada (cliente envia #)
+					if (result.equals("#")) {
+						socketChannelClient.close();
+						System.out.println("Conexao parada");
 					}
 				}
 				crunchifyIterator.remove();
@@ -77,7 +72,4 @@ public class ChatNBTCPServer {
 		}
 	}
  
-	private static void log(String str) {
-		System.out.println(str);
-	}
 }

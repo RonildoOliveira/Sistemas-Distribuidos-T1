@@ -1,9 +1,9 @@
 package ufc.cc.sd.q02;
 
-import java.net.*;
-import java.io.*;
-
-import javax.swing.JOptionPane;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 public class CalculadoraUDPServer{
     public static void main(String args[]){
     	
