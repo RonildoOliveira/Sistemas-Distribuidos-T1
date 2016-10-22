@@ -1,18 +1,3 @@
-/**
- * 
- * UNIVERSIDADE FEDERAL DO CEAR� - CAMPUS QUIXAD�
- * CI�NCIA DA COMPUTA��O - SISTEMAS DISTRIBU�DOS
- * 
- * PROF. PAULO REGO
- * 
- * DIEINISON JACK   #368339
- * RONILDO OLIVEIRA #366763
- * 
- * C�DIGOS DISPON�VEIS EM:
- * https://github.com/RonildoOliveira/Sistemas-Distribuidos-T1
- * 
- **/
-
 package ufc.cc.sd.q03;
 
 import java.io.IOException;
@@ -22,35 +7,34 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class ChatTCPClient {
-	@SuppressWarnings("unused")
+public class ChatTCPCliente {
 	private String host;
-	@SuppressWarnings("unused")
 	private int porta;
 	   
-	public ChatTCPClient (String host, int porta) {
+	public ChatTCPCliente (String host, int porta) {
 	    this.host = host;
 	    this.porta = porta;
 	}
 	
 	public void executa(){
 		try {
-			Scanner scan = new Scanner(System.in);
+			Scanner scanN = new Scanner(System.in);
 			String nome = null;
 			Socket cliente = new Socket("localhost", 6666);
-			
-			
-			
-			//Thread to receive messages from server
+			System.out.println("Diga seu nome: ");
+			nome = scanN.nextLine();
+			System.out.println("Bem vindo " + nome);
+	
+			//Thread to receive mesages from server
 			Receber r = new Receber(cliente.getInputStream());
 			Thread t = new Thread(r);
 			t.start();
 			
-			//Read messages and sends to server
-			Scanner scan2 = new Scanner(System.in);
+			//Lê msgs do teclado e manda pro servidor
+			Scanner scan = new Scanner(System.in);
 			PrintStream msg = new PrintStream(cliente.getOutputStream());
-			while(scan2.hasNext()){
-				msg.println(scan2.nextLine());
+			while(scan.hasNextLine()){
+				msg.println(scan.nextLine());
 			}
 			
 			msg.close();
@@ -65,15 +49,15 @@ public class ChatTCPClient {
 	}
 	  
 	public class Receber implements Runnable {
+		
 		private InputStream servidor;
 		 
 		public Receber(InputStream servidor) {
 			this.servidor = servidor;
 		}
 		   
-		@SuppressWarnings("resource")
 		public void run() {
-		// Receive messages from server and shows in the console
+		// recebe msgs do servidor e imprime no console
 		Scanner s = new Scanner(this.servidor);
 			while (s.hasNextLine()) {
 				System.out.println(s.nextLine());
@@ -82,7 +66,7 @@ public class ChatTCPClient {
 	}
 	
 	public static void main(String[] args) {
-		ChatTCPClient cli = new ChatTCPClient("localhost", 6666);
+		ChatTCPCliente cli = new ChatTCPCliente("localhost", 6666);
 		cli.executa();
 	}
 }
